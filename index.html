@@ -23,6 +23,27 @@
 			body {
 				font-family: 'Inter', sans-serif;
 			}
+
+			.bezier-gallery {
+				display: grid;
+				grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+				gap: 24px;
+			}
+
+			.bezier-gallery figure {
+				margin: 0;
+			}
+
+			.bezier-gallery img {
+				display: block;
+				width: 100%;
+				height: auto;
+			}
+
+			.bezier-gallery figcaption {
+				margin-top: 8px;
+				line-height: 1.5;
+			}
 		</style>
 	</head>
 	<body>
@@ -53,36 +74,53 @@
 		<h2>Section I: Bezier Curves and Surfaces</h2>
 
 		<h3>Part 1: Bezier curves with 1D de Casteljau subdivision</h3>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		<p>De Casteljau's algorithm finds a point on a Bezier curve by repeatedly interpolating between neighboring points using the same value of <code>t</code>. In my <code>evaluateStep</code> function, I loop through each neighboring pair, calculate <code>(1 - t) * points[i] + t * points[i + 1]</code>, and add the new point to a result vector. Each step gives us one fewer point, so we repeat until just one is left. That's the point on the curve at <code>t</code>.</p>
 
-		<p>Here is an example 2x2 gridlike structure using an HTML table. Each <b>tr</b> is a row and each <b>td</b> is a column in that row. You might find this useful for framing and showing your result images in an organized fashion.</p>
-		<div style="display: flex; flex-direction: column; align-items: center;">
-			<table style="width: 100%; text-align: center; border-collapse: collapse;">
-			  <tr>
-				<td style="text-align: center;">
-				  <img src="assets/teapot.png" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
-				</td>
-				<td style="text-align: center;">
-				  <img src="assets/teapot.png" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
-				</td>
-			  </tr>
-			  <tr>
-				<td style="text-align: center;">
-				  <img src="assets/teapot.png" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
-				</td>
-				<td style="text-align: center;">
-				  <img src="assets/teapot.png" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
-				</td>
-			  </tr>
-			</table>
+		<p>I used six control points for this curve. These screenshots show each evaluation level, followed by the completed curve. Click any image to see it at full size.</p>
+		<div class="bezier-gallery">
+			<figure>
+				<a href="assets/part1/level-0.png"><img src="assets/part1/level-0.png" alt="Level 0: The six original control points." loading="lazy"/></a>
+				<figcaption>Level 0: The six original control points.</figcaption>
+			</figure>
+			<figure>
+				<a href="assets/part1/level-1.png"><img src="assets/part1/level-1.png" alt="Level 1: Five interpolated points." loading="lazy"/></a>
+				<figcaption>Level 1: Five interpolated points.</figcaption>
+			</figure>
+			<figure>
+				<a href="assets/part1/level-2.png"><img src="assets/part1/level-2.png" alt="Level 2: Four interpolated points." loading="lazy"/></a>
+				<figcaption>Level 2: Four interpolated points.</figcaption>
+			</figure>
+			<figure>
+				<a href="assets/part1/level-3.png"><img src="assets/part1/level-3.png" alt="Level 3: Three interpolated points." loading="lazy"/></a>
+				<figcaption>Level 3: Three interpolated points.</figcaption>
+			</figure>
+			<figure>
+				<a href="assets/part1/level-4.png"><img src="assets/part1/level-4.png" alt="Level 4: Two interpolated points." loading="lazy"/></a>
+				<figcaption>Level 4: Two interpolated points.</figcaption>
+			</figure>
+			<figure>
+				<a href="assets/part1/level-5.png"><img src="assets/part1/level-5.png" alt="Level 5: The final evaluated point, shown in red." loading="lazy"/></a>
+				<figcaption>Level 5: The final evaluated point, shown in red.</figcaption>
+			</figure>
+			<figure>
+				<a href="assets/part1/complete-curve.png"><img src="assets/part1/complete-curve.png" alt="The completed Bezier curve in green, with the evaluated point in red." loading="lazy"/></a>
+				<figcaption>The completed Bezier curve in green, with the evaluated point in red.</figcaption>
+			</figure>
 		</div>
 
+		<h4>Moving the control points and changing t</h4>
+		<p>I moved the original control points around and scrolled to change <code>t</code>. Moving the points changed the shape of the curve, while changing <code>t</code> moved the red evaluated point along it.</p>
+		<!-- Add the supplied modified-curve screenshot here once its local file is available. -->
+
 		<h3>Part 2: Bezier surfaces with separable 1D de Casteljau</h3>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		<p>For Bezier surfaces, we use the same algorithm in two directions across a grid of 3D control points. My <code>evaluateStep</code> works just like Part 1, but with <code>Vector3D</code> points. In <code>evaluate1D</code>, I repeat that step until one point is left. Then, in <code>evaluate</code>, I evaluate each row using <code>u</code> and collect the results. I evaluate those points using <code>v</code> to get the final point on the surface at <code>(u, v)</code>.</p>
+
+		<!-- Uncomment this figure once the supplied screenshot is saved as assets/part2/teapot-bez.png.
+		<figure>
+			<a href="assets/part2/teapot-bez.png"><img src="assets/part2/teapot-bez.png" alt="Teapot evaluated from bez/teapot.bez, shown as a triangle mesh." style="width:100%; height:auto;"/></a>
+			<figcaption>My implementation evaluating <code>bez/teapot.bez</code>.</figcaption>
+		</figure>
+		-->
 
 		<h2>Section II: Triangle Meshes and Half-Edge Data Structure</h2>
 
