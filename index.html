@@ -186,7 +186,48 @@
 		<p>I haven't encountered any major debugging issues yet. The main challenge was keeping track of all the half-edge connections, since an incorrect pointer assignment could cause the mesh to behave unexpectedly. Organizing the implementation into separate steps for creating elements and updating connectivity helped make the code easier to follow.</p>
 
 		<h3>Part 6: Loop subdivision for mesh upsampling</h3>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		<h4>1. Implementation and debugging tricks</h4>
+		<p>I implemented Loop subdivision in five passes:</p>
+		<ol>
+			<li>Compute and store the updated position of each original vertex using \(p'=(1-nu)p+u\sum_{i=1}^{n}p_i\), where \(n\) is the number of neighbors, \(u=3/16\) when \(n=3\), and \(u=3/(8n)\) otherwise.</li>
+			<li>Compute and store the new vertex position for each edge using \(p_e=\frac{3}{8}(a+b)+\frac{1}{8}(c+d)\), where \(a,b\) are the endpoints and \(c,d\) are the opposite vertices of the two adjacent triangles.</li>
+			<li>Split every original edge.</li>
+			<li>Flip newly created edges that connect an old vertex to a new vertex.</li>
+			<li>Copy the stored positions into the vertices.</li>
+		</ol>
+		<p>A useful implementation trick was computing all positions before changing connectivity, so every weighted average uses the original mesh. I also saved the original edge iterators in a vector to avoid accidentally splitting newly inserted edges. I used <code>isNew</code> flags to identify which edges to flip: the two halves of an original split edge are marked old, while the new cross edges are marked new. Keeping these steps separate made it easier to track connectivity and position updates. My implementation skips meshes containing boundary edges.</p>
+
+		<h4>2. Subdivision observations and preserving sharp features</h4>
+		<p>Repeated subdivision rounds sharp corners and edges because the position updates average neighboring vertices across those features. The cube shrinks and becomes progressively smoother, while the mesh becomes denser. Starting with 12 triangles, the original cube has 48, 192, and 768 triangles after one, two, and three iterations, respectively. The screenshots below show the original cube and successive subdivision results. Click any image to see it at full size.</p>
+		<div class="bezier-gallery">
+			<figure>
+				<a href="assets/part2/Screenshot%202026-10-12%20at%207.05.32%E2%80%AFPM.png"><img src="assets/part2/Screenshot%202026-10-12%20at%207.05.32%E2%80%AFPM.png" alt="Original cube: a square face divided by a diagonal, before subdivision." loading="lazy"/></a>
+				<figcaption>Original cube: a square face divided by a diagonal, before subdivision.</figcaption>
+			</figure>
+			<figure>
+				<a href="assets/part2/Screenshot%202026-10-12%20at%207.07.34%E2%80%AFPM.png"><img src="assets/part2/Screenshot%202026-10-12%20at%207.07.34%E2%80%AFPM.png" alt="Early subdivision: the corners move inward and the silhouette becomes uneven." loading="lazy"/></a>
+				<figcaption>Early subdivision: the corners move inward and the silhouette becomes uneven.</figcaption>
+			</figure>
+			<figure>
+				<a href="assets/part2/Screenshot%202026-10-12%20at%207.07.46%E2%80%AFPM.png"><img src="assets/part2/Screenshot%202026-10-12%20at%207.07.46%E2%80%AFPM.png" alt="Further subdivision: the cube becomes rounder, with visible flat-shaded facets." loading="lazy"/></a>
+				<figcaption>Further subdivision: the cube becomes rounder, with visible flat-shaded facets.</figcaption>
+			</figure>
+			<figure>
+				<a href="assets/part2/Screenshot%202026-10-12%20at%207.08.06%E2%80%AFPM.png"><img src="assets/part2/Screenshot%202026-10-12%20at%207.08.06%E2%80%AFPM.png" alt="A denser subdivided mesh: smaller triangles and a smoother silhouette." loading="lazy"/></a>
+				<figcaption>A denser subdivided mesh: smaller triangles and a smoother silhouette.</figcaption>
+			</figure>
+			<figure>
+				<a href="assets/part2/Screenshot%202026-10-12%20at%207.08.12%E2%80%AFPM.png"><img src="assets/part2/Screenshot%202026-10-12%20at%207.08.12%E2%80%AFPM.png" alt="Further refinement: the surface is smoother, but the original triangulation still influences its shape." loading="lazy"/></a>
+				<figcaption>Further refinement: the surface is smoother, but the original triangulation still influences its shape.</figcaption>
+			</figure>
+		</div>
+		<p>Pre-splitting can reduce rounding by placing neighboring vertices closer to the features being preserved. I tested an additional midpoint refinement pass on the face-center mesh described below before applying Loop subdivision: I split the existing edges, flipped the appropriate new edges, and retained the original vertices' positions. After three Loop iterations, this pre-refined mesh retained flatter faces and a more cube-like silhouette.</p>
+		<p>For example, after one Loop iteration, a corner near \((1,1,-1)\) moves to approximately \((0.75,0.75,-0.75)\) on the face-center mesh, compared with \((0.875,0.875,-0.875)\) when the additional midpoint refinement is applied first. Pre-splitting reduces rounding, but it does not preserve perfectly sharp creases.</p>
+
+		<h4>3. Cube asymmetry and preprocessing</h4>
+		<p>When I repeatedly subdivided <code>dae/cube.dae</code>, the cube became slightly asymmetric, as seen in the subdivision sequence above. Its geometry is approximately symmetric, but its triangulation is not: each square face has a diagonal, and the original corner vertices have between three and six neighbors. Corresponding corners therefore receive different neighborhood averages. For example, a corner near \((1,1,-1)\) moves to approximately \((0.625,0.625,-0.8125)\) after the first iteration, showing unequal movement along the three axes.</p>
+		<p>To make subdivision symmetric, I split the diagonal on each of the six square faces. Each face then has a center vertex connected to all four corners, forming four triangles. Every original corner has six neighbors, and corresponding neighborhoods match under the cube's rotations and reflections. The Loop weights therefore act symmetrically, preserving symmetry through subsequent subdivisions apart from tiny coordinate inaccuracies in the input.</p>
+		<p>Six diagonal splits are sufficient for this construction; no edge flips are required. Flips alone change the diagonal orientations without removing their directional bias. The additional refinement used to reduce rounding in question 2 uses both splits and flips.</p>
 
 		<h2>(Optional) Section III: Potential Extra Credit - Art Competition: Model something Creative</h2>
 		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
