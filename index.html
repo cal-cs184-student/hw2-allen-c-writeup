@@ -126,7 +126,19 @@
 		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 
 		<h3>Part 4: Edge flip</h3>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		<p>I first check if the edge is on a boundary and return without changing it if it is. Otherwise, I save the six half-edges around the two triangles, along with their vertices, edges, faces, and outside twins. I reconnect the shared edge to the two opposite vertices, then use <code>setNeighbors</code> to rebuild the two triangle loops. Finally, I update the half-edge pointers for the vertices, edges, and faces. Nothing gets added or deleted, and the operation only touches this small neighborhood, so it takes constant time.</p>
+		<p>Keeping the half-edges labeled <code>h0</code> through <code>h5</code> and saving the original pointers before changing anything helped keep the connections straight. There wasn't a big debugging issue with the flip itself. The checks passed for 20 repeated flips, including the pointer connections, unchanged element counts, and leaving boundary edges alone.</p>
+		<p>Here is the teapot before and after a few flips. You can see the diagonals change across the front of the teapot.</p>
+		<div class="bezier-gallery">
+			<figure>
+				<a href="assets/part4/before-flips.png"><img src="assets/part4/before-flips.png" alt="Teapot mesh before edge flips." loading="lazy"/></a>
+				<figcaption>Before flipping the edges.</figcaption>
+			</figure>
+			<figure>
+				<a href="assets/part4/after-flips.png"><img src="assets/part4/after-flips.png" alt="Teapot mesh after several edges on the front were flipped." loading="lazy"/></a>
+				<figcaption>After flipping several edges on the front.</figcaption>
+			</figure>
+		</div>
 
 		<h3>Part 5: Edge split</h3>
 		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
