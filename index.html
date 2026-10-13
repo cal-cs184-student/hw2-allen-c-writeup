@@ -143,7 +143,35 @@
 		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 
 		<h3>Part 5: Edge split</h3>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		<h4>1. Implementation and debugging tricks</h4>
+		<p>I implemented the edge split operation by first identifying the six half-edges, four vertices, and two faces surrounding the original edge. I then created a new vertex at the midpoint of the edge, along with three new edges, two new faces, and six new half-edges. After that, I updated the half-edge connectivity using <code>setNeighbors()</code> and reassigned the corresponding vertex, edge, and face pointers. One useful implementation trick was labeling the original and new half-edges separately, which made it easier to keep track of their relationships and avoid assigning incorrect pointers.</p>
+
+		<h4>2. Before and after edge split</h4>
+		<div class="bezier-gallery" style="grid-template-columns: repeat(2, minmax(0, 1fr));">
+			<figure>
+				<a href="assets/part2/flat_shading.png"><img src="assets/part2/flat_shading.png" alt="Original teapot mesh with flat shading before mesh operations." loading="lazy"/></a>
+				<figcaption>Before: flat shading</figcaption>
+			</figure>
+			<figure>
+				<a href="assets/part2/split.png"><img src="assets/part2/split.png" alt="Teapot mesh after edge split operations." loading="lazy"/></a>
+				<figcaption>After edge split</figcaption>
+			</figure>
+		</div>
+
+		<h4>3. Before and after edge flip + split</h4>
+		<div class="bezier-gallery" style="grid-template-columns: repeat(2, minmax(0, 1fr));">
+			<figure>
+				<a href="assets/part2/flat_shading.png"><img src="assets/part2/flat_shading.png" alt="Original teapot mesh with flat shading before mesh operations." loading="lazy"/></a>
+				<figcaption>Before: flat shading</figcaption>
+			</figure>
+			<figure>
+				<a href="assets/part2/split+flip.png"><img src="assets/part2/split+flip.png" alt="Teapot mesh after edge flip and split operations." loading="lazy"/></a>
+				<figcaption>After edge flip + split</figcaption>
+			</figure>
+		</div>
+
+		<h4>4. Debugging journey</h4>
+		<p>I haven't encountered any major debugging issues yet. The main challenge was keeping track of all the half-edge connections, since an incorrect pointer assignment could cause the mesh to behave unexpectedly. Organizing the implementation into separate steps for creating elements and updating connectivity helped make the code easier to follow.</p>
 
 		<h3>Part 6: Loop subdivision for mesh upsampling</h3>
 		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
