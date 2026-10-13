@@ -49,7 +49,7 @@
 	<body>
 		<div class="container">
 		<h1>CS184/284A Fall 2026 Homework 2 Write-Up</h1>
-		<div style="text-align: center;">Names: </div>
+		<div style="text-align: center;">Names: Allen Chen, Ronald Aung </div>
 
 		<br>
 
@@ -69,7 +69,7 @@
 		-->
 
 		<h2>Overview</h2>
-		Give a high-level overview of what you implemented in this homework. Think about what you've built as a whole. Share your thoughts on what interesting things you've learned from completing the homework.
+		In this homework, I implemented several techniques for working with Bezier curves, Bezier surfaces, and triangle meshes. I started by using de Casteljau's algorithm to evaluate points on Bezier curves and surfaces through repeated linear interpolation. I then worked with the half-edge data structure to calculate area-weighted vertex normals and perform edge flips and splits. Finally, these mesh operations helped build toward Loop subdivision, which allows us to create smoother meshes by adding and repositioning vertices. One of the most interesting things I learned was how the half-edge data structure represents the connections between vertices, edges, and faces, and how important it is to update these connections correctly when modifying a mesh. I also found it interesting how relatively simple operations, like linear interpolation and edge splitting, can be combined to create complex curves and smooth surfaces.
 
 		<h2>Section I: Bezier Curves and Surfaces</h2>
 
@@ -229,19 +229,6 @@
 		<p>To make subdivision symmetric, I split the diagonal on each of the six square faces. Each face then has a center vertex connected to all four corners, forming four triangles. Every original corner has six neighbors, and corresponding neighborhoods match under the cube's rotations and reflections. The Loop weights therefore act symmetrically, preserving symmetry through subsequent subdivisions apart from tiny coordinate inaccuracies in the input.</p>
 		<p>Six diagonal splits are sufficient for this construction; no edge flips are required. Flips alone change the diagonal orientations without removing their directional bias. The additional refinement used to reduce rounding in question 2 uses both splits and flips.</p>
 
-		<h2>(Optional) Section III: Potential Extra Credit - Art Competition: Model something Creative</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-
-		<h2>Additional Notes (please remove)</h2>
-		<ul>
-			<li>You can also add code if you'd like as so: <code>code code code</code></li>
-			<li>If you'd like to add math equations, 
-				<ul>
-					<li>You can write inline equations like so: \( a^2 + b^2 = c^2 \)</li>
-					<li>You can write display equations like so: \[ a^2 + b^2 = c^2 \]</li>
-				</ul>
-			</li>
-		</ul>
 		</div>
 	</body>
 </html>
